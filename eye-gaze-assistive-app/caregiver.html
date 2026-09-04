@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Caregiver Dashboard</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background: #f4f4f4;
+        }
+
+
+        .container {
+            width: 90%;
+            max-width: 400px;
+
+            text-align: center;
+
+            background: white;
+
+            padding: 30px 20px;
+
+            border-radius: 15px;
+
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+
+        .request-box {
+
+            padding: 25px;
+
+            margin-bottom: 20px;
+
+            border-radius: 12px;
+
+            background: #eeeeee;
+        }
+
+
+        .request {
+
+            font-size: 24px;
+
+            font-weight: bold;
+
+            margin: 15px 0;
+        }
+
+
+        button {
+
+            width: 100%;
+
+            padding: 15px;
+
+            font-size: 18px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            cursor: pointer;
+
+            background: #4CAF50;
+
+            color: white;
+        }
+
+
+        button:hover {
+
+            opacity: 0.9;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="container">
+
+        <h1>Caregiver Dashboard</h1>
+
+
+        <div class="request-box">
+
+            <p>Current Patient Request</p>
+
+
+            <div
+                class="request"
+                id="request">
+
+                No new request
+
+            </div>
+
+
+        </div>
+
+
+        <button
+            onclick="acknowledgeRequest()">
+
+            ✓ ACKNOWLEDGE
+
+        </button>
+
+
+    </div>
+
+
+
+    <script>
+
+
+        // ---------------------------------------
+        // CHECK PATIENT REQUEST
+        // ---------------------------------------
+
+        async function checkRequest() {
+
+            try {
+
+                const response = await fetch(
+                    "http://127.0.0.1:5000/request"
+                );
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+
+                    data.request &&
+
+                    data.request !== "NONE"
+
+                ) {
+
+                    document
+                        .getElementById("request")
+                        .innerText =
+
+                        "🚨 Patient needs " +
+
+                        data.request.toUpperCase();
+
+                }
+
+            }
+
+
+            catch (error) {
+
+                console.error(
+                    "Error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+
+        // ---------------------------------------
+        // CHECK EVERY SECOND
+        // ---------------------------------------
+
+        setInterval(
+            checkRequest,
+            1000
+        );
+
+
+
+        // ---------------------------------------
+        // ACKNOWLEDGE BUTTON
+        // ---------------------------------------
+
+        function acknowledgeRequest() {
+
+            document
+                .getElementById("request")
+                .innerText =
+
+                "✓ Request Acknowledged";
+
+        }
+
+
+    </script>
+
+
+</body>
+
+</html>

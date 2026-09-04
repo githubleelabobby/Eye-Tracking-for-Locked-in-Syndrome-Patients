@@ -1,0 +1,158 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #ead8d8;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 90%;
+    max-width: 1000px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 4rem;
+    font-weight: bold;
+    color: #011833;
+
+    margin-bottom: 15px;
+
+    text-shadow:
+        2px 2px 5px rgba(0, 0, 0, 0.35),
+        0 0 15px rgba(255, 255, 255, 0.25);
+
+    letter-spacing: 1px;
+}
+
+.instruction {
+    font-size: 2rem;
+    margin-bottom: 40px;
+    color: #022145
+}
+
+.options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+}
+
+/* OPTION CARDS */
+.option {
+    border: none;
+    border-radius: 20px;
+    padding: 20px;
+    height: 280px;
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transition: transform 0.2s;
+}
+
+/* Hover effect */
+.option:hover {
+    transform: scale(1.03);
+}
+
+/* IMAGES */
+.option img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+    border-radius: 15px;
+}
+
+/* Different option colours */
+
+.water {
+    background: #bde7ff;
+}
+
+.toilet {
+    background: #d7f5d0;
+}
+
+.pain {
+    background: #ffd6d6;
+}
+
+.help {
+    background: #ffe7b3;
+}
+
+/* STATUS MESSAGE */
+
+#status {
+    margin-top: 25px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    min-height: 30px;
+}
+
+body {
+    background-image: url("Background.png.jpeg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+body {
+    font-family: Arial, sans-serif;
+
+    background-image:
+        linear-gradient(
+            rgba(161, 236, 228, 0.35), rgba(225, 176, 225, 0.1),rgba(167, 125, 214, 0.35)
+        ),
+        url("Background.png.jpeg");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.option:hover {
+    transform: scale(1.04);
+
+    box-shadow:
+        0 0 15px rgba(238, 240, 240, 0.8),
+        0 0 30px rgba(246, 248, 248, 0.6),
+        0 0 45px rgba(9, 239, 235, 0.4);
+}
+.option {
+    border: none;
+    border-radius: 20px;
+    padding: 20px;
+    height: 280px;
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.gaze-active {
+    transform: scale(1.05);
+    box-shadow:
+        0 0 20px white,
+        0 0 40px white,
+        0 0 60px rgba(255, 255, 255, 0.8);
+}

@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Caregiver Dashboard</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            font-family: Arial, sans-serif;
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            background: #f4f4f4;
+
+            padding: 20px;
+
+        }
+
+
+        .container {
+
+            width: 100%;
+
+            max-width: 430px;
+
+            text-align: center;
+
+            background: white;
+
+            padding: 30px 20px;
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 4px 20px rgba(0,0,0,0.15);
+
+        }
+
+
+        h1 {
+
+            margin-top: 0;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .connection {
+
+            font-size: 15px;
+
+            margin-bottom: 25px;
+
+            font-weight: bold;
+
+        }
+
+
+        .request-box {
+
+            padding: 25px;
+
+            margin-bottom: 20px;
+
+            border-radius: 15px;
+
+            background: #eeeeee;
+
+            transition: 0.3s;
+
+        }
+
+
+        .request-box.alert {
+
+            background: #fff1f1;
+
+            border: 2px solid #ff4444;
+
+        }
+
+
+        .request-title {
+
+            font-size: 16px;
+
+            color: #555;
+
+        }
+
+
+        .request {
+
+            font-size: 25px;
+
+            font-weight: bold;
+
+            margin: 18px 0;
+
+            word-wrap: break-word;
+
+        }
+
+
+        .time {
+
+            font-size: 16px;
+
+            color: #666;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        button {
+
+            width: 100%;
+
+            padding: 16px;
+
+            font-size: 18px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            cursor: pointer;
+
+            background: #4CAF50;
+
+            color: white;
+
+            font-weight: bold;
+
+        }
+
+
+        button:hover {
+
+            opacity: 0.9;
+
+        }
+
+
+        button:disabled {
+
+            background: #aaaaaa;
+
+            cursor: not-allowed;
+
+        }
+
+
+        .status {
+
+            margin-top: 20px;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            min-height: 24px;
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="container">
+
+
+        <h1>
+            Caregiver Dashboard
+        </h1>
+
+
+        <div
+            class="connection"
+            id="connectionStatus">
+
+            🟠 Connecting...
+
+        </div>
+
+
+        <div
+            class="request-box"
+            id="requestBox">
+
+
+            <div class="request-title">
+
+                Current Patient Request
+
+            </div>
+
+
+            <div
+                class="request"
+                id="request">
+
+                No new request
+
+            </div>
+
+
+            <div
+                class="time"
+                id="requestTime">
+
+            </div>
+
+
+        </div>
+
+
+        <button
+            id="acknowledgeButton"
+            onclick="acknowledgeRequest()"
+            disabled>
+
+            ✓ ACKNOWLEDGE
+
+        </button>
+
+
+        <div
+            class="status"
+            id="statusMessage">
+
+        </div>
+
+
+    </div>
+
+
+
+    <script>
+
+
+        // ---------------------------------------
+        // SERVER ADDRESS
+        // ---------------------------------------
+
+        const SERVER_URL =
+            "http://192.168.1.39:5000";
+
+
+        // ---------------------------------------
+        // VARIABLES
+        // ---------------------------------------
+
+        let currentRequest = "NONE";
+
+
+        // ---------------------------------------
+        // CHECK PATIENT REQUEST
+        // ---------------------------------------
+
+        async function checkRequest() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        SERVER_URL + "/request"
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Server unavailable"
+                    );
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                // Connection successful
+
+                document
+                    .getElementById(
+                        "connectionStatus"
+                    )
+                    .innerText =
+                    "🟢 Connected to patient";
+
+
+                document
+                    .getElementById(
+                        "connectionStatus"
+                    )
+                    .style.color =
+                    "green";
+
+
+                // -----------------------------------
+                // NEW REQUEST
+                // -----------------------------------
+
+                if (
+
+                    data.request &&
+
+                    data.request !== "NONE" &&
+
+                    data.acknowledged !== true
+
+                ) {
+
+
+                    currentRequest =
+                        data.request;
+
+
+                    document
+                        .getElementById(
+                            "request"
+                        )
+                        .innerText =
+
+                        "🚨 Patient needs " +
+
+                        data.request.toUpperCase();
+
+
+                    document
+                        .getElementById(
+                            "requestTime"
+                        )
+                        .innerText =
+
+                        "Sent at: " +
+
+                        data.time;
+
+
+                    document
+                        .getElementById(
+                            "requestBox"
+                        )
+                        .classList.add(
+                            "alert"
+                        );
+
+
+                    document
+                        .getElementById(
+                            "acknowledgeButton"
+                        )
+                        .disabled = false;
+
+
+                    document
+                        .getElementById(
+                            "statusMessage"
+                        )
+                        .innerText =
+                        "⚠️ New request received";
+
+
+                }
+
+
+                // -----------------------------------
+                // ACKNOWLEDGED
+                // -----------------------------------
+
+                else if (
+
+                    data.acknowledged === true
+
+                ) {
+
+
+                    document
+                        .getElementById(
+                            "request"
+                        )
+                        .innerText =
+
+                        "✓ Request Acknowledged";
+
+
+                    document
+                        .getElementById(
+                            "requestTime"
+                        )
+                        .innerText = "";
+
+
+                    document
+                        .getElementById(
+                            "requestBox"
+                        )
+                        .classList.remove(
+                            "alert"
+                        );
+
+
+                    document
+                        .getElementById(
+                            "acknowledgeButton"
+                        )
+                        .disabled = true;
+
+
+                    document
+                        .getElementById(
+                            "statusMessage"
+                        )
+                        .innerText =
+                        "✓ Patient has been notified";
+
+                }
+
+            }
+
+
+            catch (error) {
+
+
+                document
+                    .getElementById(
+                        "connectionStatus"
+                    )
+                    .innerText =
+                    "🔴 Caregiver connection unavailable";
+
+
+                document
+                    .getElementById(
+                        "connectionStatus"
+                    )
+                    .style.color =
+                    "red";
+
+
+                console.log(
+                    "Connection error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+
+        // ---------------------------------------
+        // ACKNOWLEDGE REQUEST
+        // ---------------------------------------
+
+        async function acknowledgeRequest() {
+
+
+            try {
+
+
+                const response =
+                    await fetch(
+
+                        SERVER_URL +
+                        "/acknowledge",
+
+                        {
+
+                            method: "POST"
+
+                        }
+
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Could not acknowledge"
+                    );
+
+                }
+
+
+                document
+                    .getElementById(
+                        "request"
+                    )
+                    .innerText =
+
+                    "✓ Request Acknowledged";
+
+
+                document
+                    .getElementById(
+                        "requestTime"
+                    )
+                    .innerText = "";
+
+
+                document
+                    .getElementById(
+                        "requestBox"
+                    )
+                    .classList.remove(
+                        "alert"
+                    );
+
+
+                document
+                    .getElementById(
+                        "acknowledgeButton"
+                    )
+                    .disabled = true;
+
+
+                document
+                    .getElementById(
+                        "statusMessage"
+                    )
+                    .innerText =
+
+                    "✓ Patient has been notified";
+
+
+            }
+
+
+            catch (error) {
+
+
+                document
+                    .getElementById(
+                        "statusMessage"
+                    )
+                    .innerText =
+
+                    "❌ Could not acknowledge request";
+
+
+                console.log(
+                    error
+                );
+
+            }
+
+        }
+
+
+
+        // ---------------------------------------
+        // CHECK EVERY SECOND
+        // ---------------------------------------
+
+        setInterval(
+
+            checkRequest,
+
+            1000
+
+        );
+
+
+        // Check immediately
+
+        checkRequest();
+
+
+    </script>
+
+
+</body>
+
+</html>

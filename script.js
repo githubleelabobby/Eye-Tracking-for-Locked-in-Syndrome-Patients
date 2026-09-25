@@ -5,7 +5,11 @@ const options = document.querySelectorAll(".option");
 // SERVER ADDRESS
 // =======================================
 
-const SERVER_URL = "http://192.168.1.39:5000";
+const SERVER_URL = (
+    new URLSearchParams(window.location.search).get("backend") ||
+    window.EYE_GAZE_BACKEND_URL ||
+    "http://192.168.1.39:5000"
+).replace(/\/+$/, "");
 
 
 // =======================================

@@ -2,6 +2,12 @@ import cv2
 import mediapipe as mp
 import math
 import requests
+import os
+
+BACKEND_URL = os.environ.get(
+    "EYE_GAZE_BACKEND_URL",
+    "http://127.0.0.1:5000"
+).rstrip("/")
 
 
 # ---------------- MEDIAPIPE SETUP ----------------
@@ -240,7 +246,7 @@ while True:
 
         try:
             requests.post(
-                "http://127.0.0.1:5000/gaze",
+                f"{BACKEND_URL}/gaze",
                 json={"option": detected_option},
                 timeout=0.1
             )

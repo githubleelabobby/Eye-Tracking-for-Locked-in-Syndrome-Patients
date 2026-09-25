@@ -1,0 +1,9 @@
+Flask
+Flask-Cors
+gunicorn
+fastapi
+uvicorn
+pydantic
+opencv-python
+mediapipe
+requests
